@@ -2,10 +2,9 @@
     export let text;
     export let contact;
     export let delay = 0;
-    console.log(text, delay);
 </script>
 
-<li class="{contact}">{#if delay !== 0}<p class="typing"><span /><span /><span /></p>{:else}<p>{text}</p>{/if}</li>
+<li class="{contact}">{#if delay !== 0}<p class="typing"><span /><span /><span /></p>{:else}<p>{@html text}</p>{/if}</li>
 
 <style>
     @keyframes dots {

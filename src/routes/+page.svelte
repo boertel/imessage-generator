@@ -1,4 +1,5 @@
 <script>
+    import { enhance } from '$app/forms';
     import { browser } from '$app/environment';
     import { writable } from 'svelte/store';
 
@@ -6,7 +7,9 @@
     import Header from '$lib/Header.svelte'
     import Footer from '$lib/Footer.svelte'
 
+    export let action;
 
+    let formElement;
 
     let storedMessages = []
     if (browser) {
@@ -29,7 +32,9 @@
         { text: 'Hello, I\'m ReAIl Estate and I\'m here to help!', contact: 'other' },
         { text: 'I need you to create a marketing packet for a new property about to go on the market.', contact: 'user' },
         { text: 'Sure, can you give me some details about this property?', contact: 'other' },
-        { text: '2bed, 2 bath with garage', contact: 'user' },
+        { text: 'What is the address?', contact: 'other' },
+        { text: '2799 Broadway St', contact: 'user' },
+        { text: '7bed, 9 bath', contact: 'user' },
     ];
 
     function clear() {
@@ -37,7 +42,7 @@
     }
 
 
-    function start() {
+    function start({ delay }) {
         clear()
         let _interval = window.setInterval(function () {
             messages.update((msgs) => {
@@ -57,25 +62,26 @@
                     return msgs
                 }
             });
-        }, 1000);
+        }, delay ?? 1000);
     }
 
     function handleOnSubmit({ detail: { value: text } }) {
         if (text.startsWith('/')) {
-            if (text === '/clear') {
+            const [command, ...args] = text.split(' ');
+            if (command === '/clear') {
                 clear()
-            } else if (text === '/start') {
-                start()
+            } else if (command === '/start') {
+                const delay = args.length > 0 ? parseInt(args[1], 10) : null;
+                start({ delay })
             }
             return;
         }
         messages.update((msgs) => {
-            let contact = msgs.length % 2 === 0 ? 'user' : 'other';
-            return msgs.concat({ text, contact });
+            return msgs.concat({ text, contact: 'user' });
         });
+        formElement.requestSubmit();
     }
 </script>
-
 
 <main>
     <Header contact="ReAIl Estate" />
@@ -84,7 +90,23 @@
             <Message {...message}  />
         {/each}
     </ul>
-    <Footer on:submit={handleOnSubmit} />
+    <form method="POST" use:enhance={({ data }) => {
+        messages.update((msgs) => {
+            return msgs.concat({ text: "", contact: "other", delay: 1 });
+        });
+        return async ({ result }) => {
+            if (result.data.status === 200) {
+                messages.update((msgs) => {
+                    const previousMessage = msgs[msgs.length - 1];
+                    previousMessage.delay = 0;
+                    previousMessage.text = result.data.text;
+                    return msgs
+                });
+            }
+        }
+    }} bind:this={formElement}>
+        <Footer on:submit={handleOnSubmit} />
+    </form>
 </main>
 
 <style>
