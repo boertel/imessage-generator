@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		%sveltekit.head%
+<style>
+
+:root {
+    --background: 255, 255, 255;
+    --background-1: 242, 242, 242;
+    --foreground-1: 0, 0, 0;
+    --blur: 6px;
+    --primary: 57, 161, 249;
+}
+
+@media(prefers-color-scheme: dark) {
+    :root {
+        --background: 0, 0, 0;
+        --background-1: 59, 59, 59;
+        --foreground-1: 255, 255, 255;
+
+    }
+}
+
+* { box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground-1));
+}
+</style>
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<div style="display: contents">%sveltekit.body%</div>
+	</body>
+</html>
