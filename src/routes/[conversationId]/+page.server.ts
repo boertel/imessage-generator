@@ -4,12 +4,11 @@ import { nanoid } from 'nanoid';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params: { conversationId }, platform }) => {
-	console.log(await platform.env.D1.prepare(`SELECT * FROM conversation;`).run());
 	const { results: conversationResults } = await platform.env.D1.prepare(
 		`SELECT * FROM conversation WHERE conv_id = ? LIMIT 1;`
 	)
 		.bind(conversationId)
-		.run();
+		.all();
 	console.log({ conversationResults, conversationId });
 	const conversation = conversationResults[0];
 	const { results: messages } = await platform.env.D1.prepare(
