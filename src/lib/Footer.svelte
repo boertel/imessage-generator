@@ -16,7 +16,7 @@
 </script>
 
 <footer>
-    <textarea name="message" autoFocus placeholder="Message" on:keydown={onkeydown} rows="1" />
+    <textarea readonly name="message" autoFocus placeholder="Message" on:keydown={onkeydown} rows="1" />
 </footer>
 
 <style>

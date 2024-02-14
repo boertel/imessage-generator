@@ -38,7 +38,6 @@
     });
 
     messages.subscribe(async () => {
-        console.log({ element })
         await tick();
         scrollToBottom(element);
     });
