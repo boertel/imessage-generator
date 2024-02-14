@@ -9,6 +9,7 @@ export const load: PageLoad = async ({ params: { conversationId }, platform }) =
 	)
 		.bind(conversationId)
 		.run();
+	console.log({ conversationResults, conversationId });
 	const conversation = conversationResults[0];
 	const { results: messages } = await platform.env.D1.prepare(
 		`SELECT * FROM message WHERE msg_conv_id = ?;`
