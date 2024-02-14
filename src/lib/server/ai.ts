@@ -1,6 +1,7 @@
 import { env } from '$env/dynamic/private';
 
 async function run(model, input) {
+	/*
 	const response = await fetch(
 		`https://api.cloudflare.com/client/v4/accounts/e0e9d48f44d0812474914302f853a49a/ai/run/${model}`,
 		{
@@ -11,6 +12,7 @@ async function run(model, input) {
 	);
 	const result = await response.json();
 	return result;
+	*/
 }
 
 export async function completion(text: string) {
