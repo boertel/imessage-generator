@@ -25,6 +25,7 @@
         height: 60px;
         box-sizing: border-box;
         padding: 0;
+        z-index: 1;
     }
     header:before {
         content: '';

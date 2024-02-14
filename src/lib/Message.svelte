@@ -34,6 +34,10 @@
         min-height: 43px;
     }
 
+    :global(li p img) {
+        width: 100%;
+    }
+
     li p.typing {
         gap: 4px;
         align-items: center;
@@ -88,7 +92,6 @@
     li.user:first-child p:after, li.other + li.user p:after {
         border-bottom-left-radius: 10px;
     }
-
 
     li.other p {
         border-radius: 20px 20px 20px 10px;

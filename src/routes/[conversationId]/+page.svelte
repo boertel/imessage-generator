@@ -2,58 +2,59 @@
     import { enhance } from '$app/forms';
     import { browser } from '$app/environment';
     import { writable } from 'svelte/store';
+    import { page } from '$app/stores';
+    import { onMount, tick } from 'svelte';
 
     import Message from '$lib/Message.svelte'
     import Header from '$lib/Header.svelte'
     import Footer from '$lib/Footer.svelte'
 
+    const url = $page.url;
+    const shouldPlay = url.searchParams.has('play');
+
     export let action;
+    export let data;
 
     let formElement;
+    let element;
 
-    let storedMessages = []
-    if (browser) {
-        try {
-            storedMessages = JSON.parse(window.localStorage.getItem('messages'))
-        } catch (e) {
-            console.error(e)
-        }
-    }
-    const messages = writable(storedMessages || []);
-
-    messages.subscribe((msgs) => {
-        if (browser) {
-            window.localStorage.setItem('messages', JSON.stringify(msgs));
-        }
-    });
-
-    let transcript = [
-        { text: 'Hi', contact: 'user', delay: 1 },
-        { text: 'Hello, I\'m ReAIl Estate and I\'m here to help!', contact: 'other' },
-        { text: 'I need you to create a marketing packet for a new property about to go on the market.', contact: 'user' },
-        { text: 'Sure, can you give me some details about this property?', contact: 'other' },
-        { text: 'What is the address?', contact: 'other' },
-        { text: '2799 Broadway St', contact: 'user' },
-        { text: '7bed, 9 bath', contact: 'user' },
-    ];
+    const messages = writable(shouldPlay ? [] : data.messages || []);
 
     function clear() {
         messages.set([]);
     }
 
+    async function scrollToBottom(node) {
+        if (node) {
+            document.scrollingElement.scroll({ top: node.scrollHeight, behavior: 'smooth' });
+        }
+    }; 
+
+    onMount(() => {
+        if (shouldPlay) {
+            start({ delay: 1000 });
+            scrollToBottom(element);
+        }
+    });
+
+    messages.subscribe(async () => {
+        console.log({ element })
+        await tick();
+        scrollToBottom(element);
+    });
 
     function start({ delay }) {
         clear()
         let _interval = window.setInterval(function () {
             messages.update((msgs) => {
-                if (msgs.length < transcript.length) {
+                if (msgs.length < data.messages.length) {
                     const nextIndex = msgs.length;
                     const previousMessage = msgs[nextIndex - 1];
-                    const nextMessage = transcript[nextIndex];
+                    const nextMessage = data.messages[nextIndex];
                     if (previousMessage) {
                         previousMessage.delay = 0
                     }
-                    if (nextMessage && msgs.length !== transcript.length - 1) {
+                    if (nextMessage && msgs.length !== data.messages.length - 1) {
                         nextMessage.delay = 1
                     }
                     return msgs.concat(nextMessage)
@@ -81,11 +82,12 @@
         });
         formElement.requestSubmit();
     }
+
 </script>
 
 <main>
-    <Header contact="ReAIl Estate" />
-    <ul>
+    <Header contact={data.conversation.conv_contact_name} />
+    <ul bind:this={element}>
         {#each $messages as message}
             <Message {...message}  />
         {/each}
