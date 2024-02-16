@@ -35,7 +35,7 @@
     }
 
     :global(li p img) {
-        width: 100%;
+        width: 50%;
     }
 
     li p.typing {

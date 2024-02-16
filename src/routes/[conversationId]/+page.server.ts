@@ -1,5 +1,5 @@
 import { completion } from '$lib/server/ai.ts';
-import { nanoid } from 'nanoid';
+import { insertMessage } from '$lib/server/models';
 
 import type { PageLoad } from './$types';
 
@@ -44,24 +44,3 @@ export const actions = {
 		};
 	}
 };
-
-function insertMessage(D1, { text, contact, conversationId }) {
-	const messageId = nanoid();
-	return D1.prepare(
-		`INSERT INTO message (
-			msg_id,
-			msg_created_at,
-			msg_updated_at,
-			text,
-			contact,
-			msg_conv_id
-		) VALUES (
-			?1,
-			datetime('now'),
-			datetime('now'),
-			?2,
-			?3,
-			?4
-		);`
-	).bind(messageId, text, contact, conversationId);
-}
