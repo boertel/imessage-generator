@@ -86,7 +86,7 @@
 	li.user p {
 		border-radius: 20px 20px 10px 20px;
 		background-color: rgb(var(--primary));
-		color: rgb(var(--foreground));
+		color: white;
 	}
 	li.user p:before {
 		right: -8px;
